@@ -1,5 +1,6 @@
 import os
-from flask import Flask, render_template
+from flask import Flask, render_template, url_for
+from werkzeug.security import generate_password_hash, check_password_hash
 
 # Create instance of the Flask class
 app = Flask(__name__)
@@ -15,6 +16,11 @@ def index():
 @app.route("/expand")
 def expand():
     return render_template("expand.html")
+
+
+@app.route("/register", methods=["GET", "POST"])
+def register():
+    return render_template("register.html")
 
 
 # Run app if the default module is chosen
