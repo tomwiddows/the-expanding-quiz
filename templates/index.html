@@ -1,16 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Expanding Quiz</title>
-</head>
-<body>
-    <nav>
-        <ul>
-            <li><a href="{{ url_for('index') }}">Quiz</a></li>
-            <li><a href="{{ url_for('expand') }}">Expand</a></li>
-        </ul>
-    </nav>
-</body>
-</html>
+{% extends "base.html" %}
+{% block content %}
+    <h1>The Expanding Quiz</h1>
+{% endblock %}
