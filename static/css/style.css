@@ -2,10 +2,26 @@ body {
     font-family: "Arsenal SC", sans-serif;
 }
 
+@media only screen and (min-width: 750px) {
+    h1 {
+        text-align: center;
+        font-weight: 700;
+        font-size: xxx-large;
+    }
+}
+
+@media only screen and (min-width: 500px) {
+    h1 {
+        text-align: center;
+        font-weight: 700;
+        font-size: xx-large;
+    }
+}
+
 h1 {
     text-align: center;
     font-weight: 700;
-    font-size: xxx-large;
+    font-size: x-large;
 }
 
 nav {
