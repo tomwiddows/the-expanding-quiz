@@ -3,34 +3,19 @@ body {
     text-align: center;
 }
 
-@media only screen and (min-width: 750px) {
-    h1 {
-        font-weight: 700;
-        font-size: xxx-large;
-    }
+nav.nav-center ul {
+    text-align: center;
 }
 
-@media only screen and (min-width: 500px) {
-    h1 {
-        font-weight: 700;
-        font-size: xx-large;
-    }
+nav.nav-center ul li {
+    display: inline;
+    float: none;
 }
-
-@media only screen and (max-width: 500px) {
-    h1 {
-        font-weight: 700;
-        font-size: x-large;
-    }
-}
-
-nav {
-    padding-top: 3vh;
+nav.nav-center ul li a {
+    display: inline-block;
 }
 
 .nav-links {
-    list-style-type: none;
-    display: inline;
     font-size: x-large;
 }
 
@@ -42,6 +27,6 @@ nav {
     padding-left: 20vw;
 }
 
-nav a {
+nav ul li a {
     color: black;
 }
