@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Arsenal+SC:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
@@ -10,13 +11,16 @@
     <title>The Expanding Quiz</title>
 </head>
 <body>
-    <h1>The Expanding Quiz</h1>
-    <nav>
-        <ul>
-            <li><a href="{{ url_for('index') }}">Quiz</a></li>
-            <li><a href="{{ url_for('register') }}">Register</a></li>
-        </ul>
+
+    <nav class="justify-content-center">
+            <ul>
+                <li class="nav-links left-link"><a href="{{ url_for('index') }}">Quiz</a></li>
+                <li class="nav-links right-link"><a href="{{ url_for('register') }}">Register</a></li>
+            </ul>
+
     </nav>
+    <hr>
+    <h1>T h e &ensp; &emsp; E x p a n d i n g &ensp; &emsp; Q u i z</h1>
 
     
 
