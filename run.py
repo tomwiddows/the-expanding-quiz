@@ -10,31 +10,25 @@ from werkzeug.security import generate_password_hash, check_password_hash
 if os.path.exists("env.py"):
     import env
 
-uri = "mongodb+srv://TomW:97VVD88Rob94Hav@usersandquestions.ochexzh.mongodb.net/?retryWrites=true&w=majority&appName=usersAndQuestions"
-# Create a new client and connect to the server
-client = MongoClient(uri, server_api=ServerApi('1'))
-
-# Send a ping to confirm a successful connection
-try:
-    client.admin.command('ping')
-    print("Pinged your deployment. You successfully connected to MongoDB!")
-except Exception as e:
-    print(e)
-
 # Create instance of the Flask class
 app = Flask(__name__)
 
+app.config["MONGO.DBNAME"] = os.environ.get("MONGO.DBNAME")
+app.config["MONGO_URI"] = os.environ.get("MONGO_URI")
+app.secret_key = os.environ.get("SECRET_KEY")
+
+mongo = pymongo(app)
 
 # Route decorator targetting root directory
 @app.route("/")
-def index():
-    return render_template("index.html")
+def get_user():
+    return render_template("index.html",)
 
 
 # Route decorator targetting expand.html page
-@app.route("/expand")
-def expand():
-    return render_template("expand.html")
+@app.route("/add_questions")
+def add_questions():
+    return render_template("add_questions.html")
 
 
 @app.route("/register", methods=["GET", "POST"])
