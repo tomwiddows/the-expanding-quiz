@@ -17,7 +17,7 @@ app.config["MONGO.DBNAME"] = os.environ.get("MONGO.DBNAME")
 app.config["MONGO_URI"] = os.environ.get("MONGO_URI")
 app.secret_key = os.environ.get("SECRET_KEY")
 
-mongo = pymongo(app)
+mongo = PyMongo(app)
 
 # Route decorator targetting root directory
 @app.route('/')
@@ -31,8 +31,18 @@ def add_questions():
     if 'username' in session:
         return render_template('add_question.html')
     else:
-        return render_template('login_or_signup.html')
+        return render_template('login_or_register.html')
 
+
+# Route decorators for when user is in login_or_register.html page and chooses an option
+@app.route('/login_page')
+def login_page():
+    return render_template('login.html')
+
+
+@app.route('/register_page')
+def register_page():
+    return render_template('register.html')
 
 # Route decorator targetting add_questions route decorator or login_or_signup.html page
 @app.route("/login", methods=['GET', 'POST'])

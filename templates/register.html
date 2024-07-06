@@ -23,9 +23,13 @@
                 </div>
                 <!-- Register -->
                 <div class="row">
-                    <button type="submit" class="col s12 btn-large text-shadow">
-                        Register <i class="fas fa-sign-in-alt"></i>
-                    </button>
+                    <div class="col s12">
+                        <a href="{{ url_for('register') }}">
+                            <button type="button" class="btn-large text-shadow">
+                                Register
+                            </button>
+                        </a>
+                    </div>
                 </div>
             </div>
         </form>

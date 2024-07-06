@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block content %}
+
+    <div class="row">
+        <div class="col s6">
+            <a href="{{ url_for('login_page') }}">
+                <button type="button" class="btn-large text-shadow">
+                    Login
+                </button>
+            </a>
+        </div>
+        <div class="col s6">
+            <a href="{{ url_for('register_page') }}">
+                <button type="button" class="btn-large text-shadow">
+                    Register
+                </button>
+            </a>
+        </div>
+    </div>
+
+
+    
+{% endblock %}
