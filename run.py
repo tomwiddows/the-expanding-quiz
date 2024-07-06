@@ -20,17 +20,37 @@ app.secret_key = os.environ.get("SECRET_KEY")
 mongo = pymongo(app)
 
 # Route decorator targetting root directory
-@app.route("/")
-def get_user():
+@app.route('/')
+def index():
     return render_template("index.html",)
 
 
-# Route decorator targetting expand.html page
-@app.route("/add_questions")
+# Route decorator targetting add_questions.html page or login_or_signup.html page
+@app.route('/add_questions', methods=["GET"])
 def add_questions():
-    return render_template("add_questions.html")
+    if 'username' in session:
+        return render_template('add_question.html')
+    else:
+        return render_template('login_or_signup.html')
 
 
+# Route decorator targetting add_questions route decorator or login_or_signup.html page
+@app.route("/login", methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+        user = next((user for user in users if user['username'] == username), None)
+        if user and check_password_hash(user['password'], password):
+            session['username'] = username
+            flash('Logged in successfully!', 'success')
+            return redirect(url_for('add_questions'))
+        else:
+            flash('Invalid username or password. Please try again.', 'error')
+    return render_template('login.html')
+
+
+# Route decorator for targetting login route decorator or add_questions.html page
 @app.route("/register", methods=["GET", "POST"])
 def register():
     if request.method == "POST":
@@ -39,19 +59,19 @@ def register():
             {"username": request.form.get("username").lower()})
 
         if existing_user:
-            flash("Username already exists")
-            return redirect(url_for("register"))
+            flash("Username already exists. Redirecting to Login...")
+            return redirect(url_for("login"))
+        else:
+            register = {
+                "username": request.form.get("username").lower(),
+                "password": generate_password_hash(request.form.get("password"))
+            }
+            mongo.db.users.insert_one(register)
 
-        register = {
-            "username": request.form.get("username").lower(),
-            "password": generate_password_hash(request.form.get("password"))
-        }
-        mongo.db.users.insert_one(register)
-
-        # put the new user into 'session' cookie
-        session["user"] = request.form.get("username").lower()
-        flash("Registration Successful!")
-    return render_template("register.html")
+            # put the new user into 'session' cookie
+            session["user"] = request.form.get("username").lower()
+            flash("Registration Successful!")
+    return render_template('add_questions.html')
 
 
 # Run app if the default module is chosen
