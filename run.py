@@ -26,8 +26,8 @@ def index():
 
 
 # Route decorator targetting add_questions.html page or login_or_signup.html page
-@app.route('/add_questions', methods=["GET"])
-def add_questions():
+@app.route('/add_questions_page', methods=["GET"])
+def add_questions_page():
     if 'username' in session:
         return render_template('add_question.html')
     else:
@@ -44,7 +44,7 @@ def login_page():
 def register_page():
     return render_template('register.html')
 
-# Route decorator targetting add_questions route decorator or login_or_signup.html page
+# Route decorator targetting add_questions_page route decorator or login_or_signup.html page
 @app.route("/login", methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
@@ -54,7 +54,7 @@ def login():
         if user and check_password_hash(user['password'], password):
             session['username'] = username
             flash('Logged in successfully!', 'success')
-            return redirect(url_for('add_questions'))
+            return redirect(url_for('add_questions_page'))
         else:
             flash('Invalid username or password. Please try again.', 'error')
     return render_template('login.html')
