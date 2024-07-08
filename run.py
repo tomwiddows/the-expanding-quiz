@@ -1,10 +1,9 @@
 import os
+import random
 from flask import (
     Flask, flash, render_template,
     redirect, request, session, url_for)
 from flask_pymongo import PyMongo
-from pymongo.mongo_client import MongoClient
-from pymongo.server_api import ServerApi
 from bson.objectid import ObjectId
 from werkzeug.security import generate_password_hash, check_password_hash
 if os.path.exists("env.py"):
@@ -13,15 +12,20 @@ if os.path.exists("env.py"):
 # Create instance of the Flask class
 app = Flask(__name__)
 
-app.config["MONGO.DBNAME"] = os.environ.get("MONGO.DBNAME")
+app.config["MONGO_DBNAME"] = os.environ.get("MONGO_DBNAME")
 app.config["MONGO_URI"] = os.environ.get("MONGO_URI")
 app.secret_key = os.environ.get("SECRET_KEY")
 
+print(app.config["MONGO_DBNAME"])
+print(app.config["MONGO_URI"])
+
 mongo = PyMongo(app)
 
-# Helper function for generating a name for each new question collection
-def generate_collection_name(user_id, user_question_count, overall_question_count):
-    return f"question{overall_question_count}_{user_id}{user_question_count}"
+try:
+    mongo.cx.server_info()  # Attempt to get server info to verify connection
+    print("MongoDB connection established successfully.")
+except Exception as e:
+    print("Error connecting to MongoDB:", e)
 
 # Helper function for keeping track of the number of questions for naming collections
 def get_next_question_count():
@@ -35,18 +39,24 @@ def get_next_question_count():
 
 
 def get_random_question():
-    # Fetch all collections that start with "question"
-    collections = [col for col in mongo.db.list_collection_names() if col.startswith('question')]
-    if not collections:
-        return None
-    
-    # Randomly select a collection
-    random_collection = random.choice(collections)
-    
-    # Fetch the document with the field "question" from the selected collection
-    random_question = mongo.db[random_collection].find_one({"question": {"$exists": True}})
-    
-    return random_question
+    try:
+        # Count the total number of questions in the collection
+        total_questions = mongo.db.questions.count_documents({})
+
+        if total_questions == 0:
+            return "There are currently no quiz questions in the database. Login to add some questions"
+
+        # Generate a random index to select a random question
+        random_index = random.randint(0, total_questions - 1)
+
+        # Fetch the random question from the collection
+        random_question = mongo.db.questions.find({}).limit(1).skip(random_index).next()
+
+        return random_question
+
+    except Exception as e:
+        print("Error fetching random question:", e)
+        return "An error occurred while fetching a random question."
 
 
 # Route decorator targetting root directory
@@ -62,16 +72,20 @@ def check_answer():
     if 'username' in session:
         question_id = request.form.get('question_id')
         user_answer = request.form.get('user_answer')
-        
+
         # Fetch the correct answer from the database
-        question_collection = mongo.db[question_id.split('_')[0]]
-        question = question_collection.find_one({"_id": ObjectId(question_id)})
-        correct_answer = question['correct_answer']
-        
-        # Check if the user's answer matches the correct answer
-        result = 'Correct!' if user_answer.lower() == correct_answer.lower() else 'Incorrect!'
-        
-        return render_template('answer.html', result=result, question=question)
+        question = mongo.db.questions.find_one({"_id": ObjectId(question_id)})
+
+        if question:
+            correct_answer = question['correct_answer']
+
+            # Check if the user's answer matches the correct answer
+            result = 'Correct!' if user_answer.lower() == correct_answer.lower() else 'Incorrect!'
+
+            return render_template('answer.html', result=result, question=question)
+        else:
+            flash('Question not found in the database')
+            return redirect(url_for('index'))
     else:
         flash('User not logged in')
         return redirect(url_for('login'))
@@ -104,7 +118,7 @@ def login():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
-        user = next((user for user in users if user['username'] == username), None)
+        user = mongo.db.users.find_one({"username": username})
         if user and check_password_hash(user['password'], password):
             session['username'] = username
             flash('Logged in successfully!', 'success')
@@ -119,24 +133,25 @@ def login():
 def register():
     if request.method == "POST":
         #Check if username already exists in db
-        existing_user = mongo.db.user.find_one(
+        existing_user = mongo.db.users.find_one(
             {"username": request.form.get("username").lower()})
 
         if existing_user:
-            flash("Username already exists. Redirecting to Login...")
-            return redirect(url_for("login"))
-        else:
-            register = {
-                "username": request.form.get("username").lower(),
-                "password": generate_password_hash(request.form.get("password"))
-            }
-            mongo.db.users.insert_one(register)
+            flash("Username already exists. Please choose another username or go to login page")
+            return redirect(url_for('register'))
 
-            # put the new user into 'session' cookie
-            session["user"] = request.form.get("username").lower()
-            flash("Registration Successful!")
-            return redirect(url_for('add_questions_page'))
-    return render_template('add_questions.html')
+        register = {
+            "username": request.form.get("username").lower(),
+            "password": generate_password_hash(request.form.get("password"))
+        }
+        mongo.db.users.insert_one(register)
+
+        # put the new user into 'session' cookie
+        session["user"] = request.form.get("username").lower()
+        flash("Registration Successful!")
+        return redirect(url_for('add_questions_page'))
+    return render_template('register.html')
+        
 
 
 # logout route decorator
@@ -161,20 +176,18 @@ def add_question():
         # Get the next overall question count
         overall_question_count = get_next_question_count()
 
-        # Generate the collection name
-        collection_name = generate_collection_name(user_id, user_question_count, overall_question_count)
-
         # Prepare question data
         question = {
+            "_id": document_name,  # Unique identifier for the question
             "user_id": ObjectId(user_id),  # Store the user ID in the question document
-            "question_text": request.form.get("question_text"),
-            "correct_answer": request.form.get("correct_answer"),
+            "question": request.form.get("question"),
+            "answer": request.form.get("answer"),
             "status": "active",
             "corrections": []
         }
 
-        # Insert question into the newly created collection
-        mongo.db[collection_name].insert_one(question)
+        # Insert question into the 'questions' collection
+        mongo.db.questions.insert_one(question)
 
         # Increment the user's question count
         mongo.db.users.update_one(
@@ -183,7 +196,7 @@ def add_question():
         )
 
         flash("Question added successfully!")
-        return redirect(url_for('add_questions'))
+        return redirect(url_for('add_questions_page'))
     else:
         flash("Please log in to add a question")
         return redirect(url_for('login'))
