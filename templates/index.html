@@ -1,6 +1,11 @@
 {% extends "base.html" %}
 {% block content %}
 
-    <h2>Questions</h2>
+    <h2>{{ question.question }}</h2>
+
+    <p>
+        <input type="text">
+        <label for="text" placeholder="Answer"></label>
+    </p>
     
 {% endblock %}

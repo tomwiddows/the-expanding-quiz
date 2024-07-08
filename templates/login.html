@@ -3,22 +3,20 @@
     <h3>Login</h3>
 
     <div class="row">
-        <form class="col s12 m8 offset-m2" action="POST" action="{{ url_for('login') }}">
+        <form class="col s12 m8 offset-m2" method="POST" action="{{ url_for('login') }}">
             <div class="card-panel">
                 <!-- Username -->
                 <div class="row">
                     <div class="input-field col s12">
                         <i class="fas fa-user-plus prefix"></i>
-                        <input id="username" name="username" type="text" class="validate">
-                        <label for="username">Username</label>
+                        <input id="username" name="username" type="text" class="validate" placeholder="Username">
                     </div>
                 </div>
                 <!-- Password -->
                 <div class="row">
                     <div class="input-field col s12">
                         <i class="fas fa-user-lock prefix"></i>
-                        <input id="password" name="password" type="password" class="validate">
-                        <label for="password">Password</label>
+                        <input id="password" name="password" type="password" class="validate" placeholder="Password">
                     </div>
                 </div>
                 <!-- Register -->
@@ -33,6 +31,15 @@
                 </div>
             </div>
         </form>
+        <div class="row">
+            <div class="col s12">
+                <a href="{{ url_for('register_page') }}">
+                    <button type="button" class="btn-large text-shadow">
+                        Go to Register Page
+                    </button>
+                </a>
+            </div>
+        </div>
     </div>
 
     
