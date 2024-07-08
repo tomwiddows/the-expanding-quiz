@@ -27,6 +27,11 @@ try:
 except Exception as e:
     print("Error connecting to MongoDB:", e)
 
+if mongo.db != None:
+    print("mongo.db is correctly instantiated.")
+else:
+    print("mongo.db is None.")
+
 # Helper function for keeping track of the number of questions for naming collections
 def get_next_question_count():
     counter = mongo.db.counters.find_one_and_update(
@@ -70,8 +75,8 @@ def index():
 @app.route('/check_answer', methods=['POST'])
 def check_answer():
     if 'username' in session:
-        question_id = request.form.get('question_id')
-        user_answer = request.form.get('user_answer')
+        question = request.form.get('question')
+        answer = request.form.get('answer')
 
         # Fetch the correct answer from the database
         question = mongo.db.questions.find_one({"_id": ObjectId(question_id)})
@@ -132,6 +137,7 @@ def login():
 @app.route("/register", methods=["GET", "POST"])
 def register():
     if request.method == "POST":
+        print("posting...")
         #Check if username already exists in db
         existing_user = mongo.db.users.find_one(
             {"username": request.form.get("username").lower()})
@@ -144,6 +150,8 @@ def register():
             "username": request.form.get("username").lower(),
             "password": generate_password_hash(request.form.get("password"))
         }
+
+        print(register)
         mongo.db.users.insert_one(register)
 
         # put the new user into 'session' cookie
