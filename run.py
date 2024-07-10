@@ -87,10 +87,10 @@ def get_random_question():
 
 
 # Route decorator targetting root directory
-@app.route('/')
+@app.route('/', methods=["GET", "POST"])
 def index():
-    question = get_random_question()
-    return render_template('index.html', question=question)
+    question_info = get_random_question()
+    return render_template('index.html', question_info=question_info)
 
 
 

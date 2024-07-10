@@ -1,11 +1,19 @@
 {% extends "base.html" %}
 {% block content %}
 
-    <h2>{{ question.question }}</h2>
+    <h2>Question: {{ question_info.question }}</h2>
 
-    <p>
-        <input type="text">
-        <label for="text" placeholder="Answer"></label>
-    </p>
+    <div class="card">
+        <div class="card_image"></div>
+        <div class="card-content">
+          <span class="card-title activator grey-text text-darken-4">Click to reveal answer<br><i class="material-icons">arrow_downward</i></span>
+        </div>
+        <div class="card-reveal">
+          <span class="card-title grey-text text-darken-4"><i class="material-icons right">close</i></span>
+          <p>{{ question_info.answer }}</p>
+        </div>
+      </div>
+
+
     
 {% endblock %}

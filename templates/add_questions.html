@@ -9,24 +9,21 @@
                 <!-- Question -->
                 <div class="row">
                     <div class="input-field col s12">
-                        <input id="qestion" name="question" type="text" class="validate" placeholder="Your Question">
+                        <input id="question" name="question" type="text" class="validate" placeholder="Your Question">
                     </div>
                 </div>
                 <!-- Answer -->
                 <div class="row">
                     <div class="input-field col s12">
-                        <i class="fas fa-user-lock prefix"></i>
                         <input id="answer" name="answer" type="answer" class="validate" placeholder="Answer">
                     </div>
                 </div>
                 <!-- Submit -->
                 <div class="row">
                     <div class="col s12">
-                        <a href="{{ url_for('add_question') }}">
-                            <button type="button" class="btn-large text-shadow">
-                                Submit
-                            </button>
-                        </a>
+                        <button type="button" class="btn-large text-shadow">
+                            Submit
+                        </button>
                     </div>
                 </div>
             </div>
