@@ -45,6 +45,7 @@ def materialize_class(category):
     return classes.get(category, '')
 
 
+shown_question_ids = set()
 
 # Helper function for keeping track of the number of questions for naming collections
 def get_next_question_count():
@@ -70,6 +71,13 @@ def get_random_question():
 
         # Fetch the random question from the collection
         random_question = mongo.db.questions.find({}).limit(1).skip(random_index).next()
+
+        while random_question['_id'] in shown_question_ids:
+            random_index = random.randint(0, total_questions - 1)
+            random_question = mongo.db.questions.find({}).limit(1).skip(random_index).next()
+        
+        # Add the question ID to the set of shown questions
+        shown_question_ids.add(random_question['_id'])
 
         return random_question
 
