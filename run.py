@@ -32,6 +32,20 @@ if mongo.db != None:
 else:
     print("mongo.db is None.")
 
+
+# Custom filter for Materialize CSS classes
+@app.template_filter('materialize_class')
+def materialize_class(category):
+    classes = {
+        'success': 'green lighten-4 green-text text-darken-4',
+        'error': 'red lighten-4 red-text text-darken-4',
+        'info': 'blue lighten-4 blue-text text-darken-4',
+        'warning': 'yellow lighten-4 yellow-text text-darken-4'
+    }
+    return classes.get(category, '')
+
+
+
 # Helper function for keeping track of the number of questions for naming collections
 def get_next_question_count():
     counter = mongo.db.counters.find_one_and_update(
@@ -71,29 +85,7 @@ def index():
     return render_template('index.html', question=question)
 
 
-# Route decorator for checking answer
-@app.route('/check_answer', methods=['POST'])
-def check_answer():
-    if 'username' in session:
-        question = request.form.get('question')
-        answer = request.form.get('answer')
 
-        # Fetch the correct answer from the database
-        question = mongo.db.questions.find_one({"_id": ObjectId(question_id)})
-
-        if question:
-            correct_answer = question['correct_answer']
-
-            # Check if the user's answer matches the correct answer
-            result = 'Correct!' if user_answer.lower() == correct_answer.lower() else 'Incorrect!'
-
-            return render_template('answer.html', result=result, question=question)
-        else:
-            flash('Question not found in the database')
-            return redirect(url_for('index'))
-    else:
-        flash('User not logged in')
-        return redirect(url_for('login'))
 
 
 # Route decorator targetting add_questions.html page or login_or_signup.html page
@@ -143,7 +135,7 @@ def register():
             {"username": request.form.get("username").lower()})
 
         if existing_user:
-            flash("Username already exists. Please choose another username or go to login page")
+            flash('Username already exists. Please choose another username or go to login page', 'info')
             return redirect(url_for('register'))
 
         register = {
@@ -156,7 +148,7 @@ def register():
 
         # put the new user into 'session' cookie
         session["user"] = request.form.get("username").lower()
-        flash("Registration Successful!")
+        flash("Registration Successful!", 'success')
         return redirect(url_for('add_questions_page'))
     return render_template('register.html')
         
