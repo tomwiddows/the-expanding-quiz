@@ -62,32 +62,54 @@
                 <li>
                     <span>
                         <p>Q: {{ user_question.question }} A: {{ user_question.answer }}</p>
-                        <a class="waves-effect waves-light btn modal-trigger" href="#edit-modal">Edit</a>
-                        <button type="button" onclick="">Delete</button>
+                        <a class="waves-effect waves-light btn modal-trigger" href="#edit-modal-{{ user_question._id }}">Edit</a>
+                        <a class="waves-effect waves-light btn modal-trigger" href="#delete-modal-{{ user_question._id }}">Delete</a>
                     </span>
                     
-                    <div id="edit-modal" class="modal">
+                    <div id="edit-modal-{{ user_question._id }}" class="modal">
                         <div class="modal-content">
                             <form method="POST" action="{{ url_for('edit_question') }}">
                                 <div class="row">
                                     <div class="input-field col s12">
-                                        <input id="question" name="question" type="text" class="validate" value="{{ user_question.question }}" required>
+                                        <input id="question-{{ user_question._id }}" name="question" type="text" class="validate" value="{{ user_question.question }}" required>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="input-field col s12">
-                                        <input id="answer" name="answer" type="text" class="validate" value="{{ user_question.answer }}" required>
+                                        <input id="answer-{{ user_question._id }}" name="answer" type="text" class="validate" value="{{ user_question.answer }}" required>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="input-field col s12">
-                                        <input id="id" name="id" type="text" class="validate" value="{{ user_question._id }}" readonly>
+                                        <input id="id-{{ user_question._id }}" name="id" type="hidden" value="{{ user_question._id }}" readonly>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="col s12">
                                         <button type="submit" class="modal-close btn-large text-shadow">
                                             Submit
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div id="delete-modal-{{ user_question._id }}" class="modal">
+                        <div class="modal-content">
+                            <form method="POST" action="{{ url_for('delete_question') }}">
+                                <div>  
+                                    <p>Are you sure you want to delete the question?</p>
+                                </div>
+                                <div class="row">
+                                    <div class="input-field col s12">
+                                        <input id="delete-id-{{ user_question._id }}" name="id" type="hidden" value="{{ user_question._id }}" readonly>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col s12">
+                                        <button type="submit" class="modal-close btn-large text-shadow">
+                                            Yes
                                         </button>
                                     </div>
                                 </div>
