@@ -123,7 +123,7 @@ def add_question_page():
 @app.route('/profile', methods=['GET', 'POST'])
 def profile():
     if 'user' not in session:
-        
+
         return redirect(url_for('login_or_register'))
     user = session['user']
     
@@ -154,12 +154,12 @@ def register_page():
 
 # Route decorator targetting add_question_page route decorator
 # or login_or_signup.html page
-@app.route("/login", methods=['GET', 'POST'])
+@app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        # check if username exists in db
+        # Check if username exists in db
         existing_user = mongo.db.users.find_one(
-            {"username": request.form.get("username").lower()}
+            {'username': request.form.get('username').lower()}
         )
 
         if existing_user:
@@ -235,7 +235,7 @@ def add_question():
 
     if 'user' in session:
         user = session['user']
-        user_id = session['user_id']
+        user_id = mongo.db.users.find_one({'username': user})['_id']
 
         # Get the next overall question count
         overall_question_count = get_next_question_count()
@@ -248,7 +248,7 @@ def add_question():
             'shown_x_times': 0,
             'suggested_corrections': [],
             'status': 'active',
-            'user': [{'username': username},
+            'user': [{'username': user},
                      {'user_id': user_id}]
         }
 
@@ -264,7 +264,7 @@ def add_question():
 
         # Success message once quesiton has been added
         flash('Question added successfully!', 'success')
-        return redirect(url_for('add_question_page'))
+        return redirect(url_for('profile'))
     else:
         # Error handling message
         flash('Please log in or register to add a question', 'info')

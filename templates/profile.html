@@ -12,6 +12,7 @@
     
     <div class="row">
         <h2>Add a Question</h2>
+        <br>
         <div>
             {% with messages = get_flashed_messages(with_categories=true) %}
                 {% if messages %}
@@ -19,7 +20,7 @@
                         {% for category, message in messages %}
                             <div class="col s12">
                                 <alert class="card-panel {{ category | materialize_class }}">
-                                    <span class="white-text">{{ message }}</span>
+                                    <span class="white-text flash_message">{{ message }}</span>
                                 </alert>
                             </div>
                         {% endfor %}
@@ -27,7 +28,8 @@
                 {% endif %}
             {% endwith %}
         </div>
-        <form class="col s12 m8 offset-m2" action="POST" action="{{ url_for('add_question') }}">
+        <br>
+        <form class="col s12 m8 offset-m2" method="POST" action="{{ url_for('add_question') }}">
             <div class="card-panel">
                 <!-- Question -->
                 <div class="row">
