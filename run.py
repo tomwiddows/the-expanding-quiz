@@ -79,6 +79,12 @@ def get_random_question():
         # Add the question ID to the set of shown questions
         shown_question_ids.add(random_question['_id'])
 
+        # Add 1 to the shown_x_times variable in the questions document
+        mongo.db.questions.update_one(
+            {'_id': random_question['_id']},
+            {'$inc': {"shown_x_times": 1}}
+        )
+
         return random_question
 
     except Exception as e:
@@ -123,40 +129,53 @@ def login():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
+
+        # Check that username and password match
         user = mongo.db.users.find_one({"username": username})
         if user and check_password_hash(user['password'], password):
+            # Put the user into 'session' cookie if details match
             session['username'] = username
+            session['user_id'] = mongo.db.users.find_one({'username': username})['_id']
             flash('Logged in successfully!', 'success')
             return redirect(url_for('add_questions_page'))
         else:
+            # Error message if details do not match
             flash('Invalid username or password. Please try again.', 'error')
     return render_template('login.html')
 
 
 # Route decorator for targetting login route decorator or add_questions.html page
-@app.route("/register", methods=["GET", "POST"])
+@app.route('/register', methods=['GET', 'POST'])
 def register():
-    if request.method == "POST":
-        print("posting...")
+    if request.method == 'POST':
+        print('posting...')
         #Check if username already exists in db
         existing_user = mongo.db.users.find_one(
-            {"username": request.form.get("username").lower()})
+            {'username': request.form.get('username').lower()})
 
         if existing_user:
             flash('Username already exists. Please choose another username or go to login page', 'info')
             return redirect(url_for('register'))
 
-        register = {
-            "username": request.form.get("username").lower(),
-            "password": generate_password_hash(request.form.get("password"))
+        # Generate user_id
+        user_id = ObjectId()
+
+        # Create dictionary for new user
+        new_user = {
+            '_id': user_id,
+            'username': request.form.get('username').lower(),
+            'password': generate_password_hash(request.form.get('password')),
+            'question_count': 0
         }
 
-        print(register)
-        mongo.db.users.insert_one(register)
+        # Store new user in users dictionary
+        mongo.db.users.insert_one(new_user)
 
         # put the new user into 'session' cookie
-        session["user"] = request.form.get("username").lower()
-        flash("Registration Successful!", 'success')
+        session['user'] = request.form.get('username').lower()
+        session['user_id'] = str(user_id)
+        
+        flash('Registration Successful!', 'success')
         return redirect(url_for('add_questions_page'))
     return render_template('register.html')
         
@@ -175,44 +194,46 @@ def logout():
 @app.route('/add_question', methods=['POST'])
 def add_question():
     if 'username' in session:
+        username = session['username']
         user_id = session['user_id']
 
-        # Get the user's question count
-        user = mongo.db.users.find_one({"_id": ObjectId(user_id)})
-        user_question_count = user.get('question_count', 0)
-        
         # Get the next overall question count
         overall_question_count = get_next_question_count()
 
         # Prepare question data
         question = {
-            "_id": document_name,  # Unique identifier for the question
-            "user_id": ObjectId(user_id),  # Store the user ID in the question document
-            "question": request.form.get("question"),
-            "answer": request.form.get("answer"),
-            "status": "active",
-            "corrections": []
+            '_id': ObjectId(),
+            'question': request.form.get('question'),
+            'answer': request.form.get('answer'),
+            'shown_x_times': 0,
+            'suggested_corrections': [],
+            'status': 'active',
+            'user': [{'username': username},
+                     {'user_id': user_id}]
         }
 
         # Insert question into the 'questions' collection
         mongo.db.questions.insert_one(question)
 
+
         # Increment the user's question count
         mongo.db.users.update_one(
-            {"_id": ObjectId(user_id)},
-            {"$inc": {"question_count": 1}}
+            {'_id': ObjectId(user_id)},
+            {'$inc': {'question_count': 1}}
         )
 
-        flash("Question added successfully!")
+        # Success message once quesiton has been added
+        flash('Question added successfully!', 'success')
         return redirect(url_for('add_questions_page'))
     else:
-        flash("Please log in to add a question")
-        return redirect(url_for('login'))
+        # Error handling message
+        flash('Please log in or register to add a question', 'info')
+        return render_template('login_or_register.html')
 
 
 # Run app if the default module is chosen
-if __name__ == "__main__":
+if __name__ == '__main__':
     app.run(
-        host=os.environ.get("IP", "0.0.0.0"),
-        port=int(os.environ.get("PORT", "5000")),
+        host=os.environ.get('IP', '0.0.0.0'),
+        port=int(os.environ.get('PORT', '5000')),
         debug=True)
