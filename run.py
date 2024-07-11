@@ -122,7 +122,11 @@ def profile():
         return redirect(url_for('login_or_register'))
     user = session['user']
     
-    user_questions = list(mongo.db.questions.find({'user.username': user}))
+    if mongo.db.users.find_one({'username': user})['is_admin'] == 'false':
+        user_questions = list(mongo.db.questions.find({'user.username': user}))
+
+    else:
+        user_questions = list(mongo.db.questions.find())
 
     return render_template('profile.html', user=user, user_questions=user_questions)
 
@@ -199,7 +203,8 @@ def register():
             '_id': user_id,
             'username': request.form.get('username').lower(),
             'password': generate_password_hash(request.form.get('password')),
-            'question_count': 0
+            'question_count': 0,
+            'is_admin': False
         }
 
         # Store new user in users dictionary
