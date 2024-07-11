@@ -30,3 +30,7 @@ nav.nav-center ul li a {
 nav ul li a {
     color: black;
 }
+
+#answer {
+    font-size: large;
+}

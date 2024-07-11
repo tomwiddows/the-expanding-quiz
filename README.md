@@ -50,3 +50,7 @@ __Site Administrator__
 - The code should be well commented
 - The code should contain safeguards to prevent the user from breaking the game intentionally or unintiaonally
 - I should have overriding power for deleting questions/changing answers if appropriate
+
+## Wireframes
+
+<img src="./assets/images/index-wireframe.jpg" height="300px">  <img src="./assets/images/profile-wireframe.jpg" height="300px">
