@@ -266,7 +266,7 @@ def add_question():
         return render_template('login_or_register.html')
 
 
-#
+# 
 @app.route('/edit_question', methods=['GET', 'POST'])
 def edit_question():
     if request.method == 'POST':
@@ -274,13 +274,12 @@ def edit_question():
         user = session['user']
         user_id = mongo.db.users.find_one({'username': user})['_id']
 
-        question_id = request.form.get('id')
+        question_id = ObjectId(request.form.get('id'))
 
         new_question = request.form.get('question')
         new_answer = request.form.get('answer')
 
         new_question_doc = {
-            '_id': ObjectId(question_id),
             'question': request.form.get('question'),
             'answer': request.form.get('answer'),
             'shown_x_times': 0,
@@ -295,6 +294,15 @@ def edit_question():
 
     return redirect(url_for('profile'))
 
+@app.route('/delete_question', methods=['GET', 'POST'])
+def delete_question():
+    if request.method == 'POST':
+
+        question_id = ObjectId(request.form.get('id'))
+
+        result = mongo.db.questions.delete_one({"_id": question_id})
+
+    return redirect(url_for('profile'))
     
 # Run app if the default module is chosen
 if __name__ == '__main__':
