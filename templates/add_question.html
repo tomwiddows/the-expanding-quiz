@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block content %}
+
+    <h3>Add a Question</h3>
+    
+    <div class="row">
+        <form class="col s12 m8 offset-m2" action="POST" action="{{ url_for('add_question') }}">
+            <div class="card-panel">
+                <!-- Question -->
+                <div class="row">
+                    <div class="input-field col s12">
+                        <input id="question" name="question" type="text" class="validate" placeholder="Your Question">
+                    </div>
+                </div>
+                <!-- Answer -->
+                <div class="row">
+                    <div class="input-field col s12">
+                        <input id="answer" name="answer" type="answer" class="validate" placeholder="Answer">
+                    </div>
+                </div>
+                <!-- Submit -->
+                <div class="row">
+                    <div class="col s12">
+                        <button type="button" class="btn-large text-shadow">
+                            Submit
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    
+{% endblock %}
