@@ -33,6 +33,10 @@ else:
     print("mongo.db is None.")
 
 
+# Constant
+SHOWN_QUESTION_IDS = set()
+
+
 # Custom filter for Materialize CSS classes
 @app.template_filter('materialize_class')
 def materialize_class(category):
@@ -43,9 +47,6 @@ def materialize_class(category):
         'warning': 'yellow lighten-4 yellow-text text-darken-4'
     }
     return classes.get(category, '')
-
-
-shown_question_ids = set()
 
 
 # Helper function for keeping track of the number of questions for naming 
@@ -79,13 +80,13 @@ def get_random_question():
         random_question = mongo.db.questions.find({}).limit(1).skip(
             random_index).next()
 
-        while random_question['_id'] in shown_question_ids:
+        while random_question['_id'] in SHOWN_QUESTION_IDS:
             random_index = random.randint(0, total_questions - 1)
             random_question = mongo.db.questions.find({}).limit(1).skip(
                 random_index).next()
         
         # Add the question ID to the set of shown questions
-        shown_question_ids.add(random_question['_id'])
+        SHOWN_QUESTION_IDS.add(random_question['_id'])
 
         # Add 1 to the shown_x_times variable in the questions document
         mongo.db.questions.update_one(
@@ -98,12 +99,6 @@ def get_random_question():
     except Exception as e:
         print("Error fetching random question:", e)
         return "An error occurred while fetching a random question."
-
-
-# Route decorator for add_question.html page
-def add_question():
-
-    return render_template('add_question.html')
 
 
 # Route decorator targetting root directory
@@ -176,8 +171,8 @@ def login():
                 return redirect(url_for('login'))
         else:
             # username doesn't exist
-            flash('Incorrect Username and/or Password')
-            return redirect(url_for('login'))
+            flash('Incorrect Username and/or Password. Please try again')
+    return render_template('login.html')
 
 
 # Route decorator for targetting login route decorator
@@ -249,7 +244,7 @@ def add_question():
             'suggested_corrections': [],
             'status': 'active',
             'user': [{'username': user},
-                     {'user_id': user_id}]
+                     {'user_id': str(user_id)}]
         }
 
         # Insert question into the 'questions' collection
@@ -271,6 +266,36 @@ def add_question():
         return render_template('login_or_register.html')
 
 
+#
+@app.route('/edit_question', methods=['GET', 'POST'])
+def edit_question():
+    if request.method == 'POST':
+
+        user = session['user']
+        user_id = mongo.db.users.find_one({'username': user})['_id']
+
+        question_id = request.form.get('id')
+
+        new_question = request.form.get('question')
+        new_answer = request.form.get('answer')
+
+        new_question_doc = {
+            '_id': ObjectId(question_id),
+            'question': request.form.get('question'),
+            'answer': request.form.get('answer'),
+            'shown_x_times': 0,
+            'suggested_corrections': [],
+            'status': 'active',
+            'user': [{'username': user},
+                     {'user_id': user_id}]
+        }
+
+        result = mongo.db.questions.replace_one({'_id': question_id}, new_question_doc)
+        print(result)
+
+    return redirect(url_for('profile'))
+
+    
 # Run app if the default module is chosen
 if __name__ == '__main__':
     app.run(
