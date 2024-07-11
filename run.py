@@ -27,7 +27,7 @@ try:
 except Exception as e:
     print("Error connecting to MongoDB:", e)
 
-if mongo.db != None:
+if mongo.db is not None:
     print("mongo.db is correctly instantiated.")
 else:
     print("mongo.db is None.")
@@ -47,7 +47,9 @@ def materialize_class(category):
 
 shown_question_ids = set()
 
-# Helper function for keeping track of the number of questions for naming collections
+
+# Helper function for keeping track of the number of questions for naming 
+# collections
 def get_next_question_count():
     counter = mongo.db.counters.find_one_and_update(
         {"_id": "question_count"},
@@ -58,23 +60,29 @@ def get_next_question_count():
     return counter["count"]
 
 
+# Function for generating a random question from questions database
 def get_random_question():
     try:
         # Count the total number of questions in the collection
-        total_questions = mongo.db.questions.count_documents({})
+        total_questions = mongo.db.questions.count_documents(
+            {}
+        )
 
         if total_questions == 0:
-            return "There are currently no quiz questions in the database. Login to add some questions"
+            return ('There are currently no quiz questions in the database. '
+                'Login to add some questions')
 
         # Generate a random index to select a random question
         random_index = random.randint(0, total_questions - 1)
 
         # Fetch the random question from the collection
-        random_question = mongo.db.questions.find({}).limit(1).skip(random_index).next()
+        random_question = mongo.db.questions.find({}).limit(1).skip(
+            random_index).next()
 
         while random_question['_id'] in shown_question_ids:
             random_index = random.randint(0, total_questions - 1)
-            random_question = mongo.db.questions.find({}).limit(1).skip(random_index).next()
+            random_question = mongo.db.questions.find({}).limit(1).skip(
+                random_index).next()
         
         # Add the question ID to the set of shown questions
         shown_question_ids.add(random_question['_id'])
@@ -92,6 +100,12 @@ def get_random_question():
         return "An error occurred while fetching a random question."
 
 
+# Route decorator for add_question.html page
+def add_question():
+
+    return render_template('add_question.html')
+
+
 # Route decorator targetting root directory
 @app.route('/', methods=["GET", "POST"])
 def index():
@@ -99,19 +113,34 @@ def index():
     return render_template('index.html', question_info=question_info)
 
 
-
-
-
-# Route decorator targetting add_questions.html page or login_or_signup.html page
-@app.route('/add_questions_page', methods=["GET"])
-def add_questions_page():
-    if 'username' in session:
+@app.route('/add_question_page', methods=['POST'])
+def add_question_page():
+    if 'user' in session:
         return render_template('add_question.html')
-    else:
-        return render_template('login_or_register.html')
+    return render_template(url_for('login_or_register'))
 
 
-# Route decorators for when user is in login_or_register.html page and chooses an option. First option is for login.html
+@app.route('/profile', methods=['GET', 'POST'])
+def profile():
+    if 'user' not in session:
+        
+        return redirect(url_for('login_or_register'))
+    user = session['user']
+    
+    user_questions = list(mongo.db.questions.find({'user.username': user}))
+
+    return render_template('profile.html', user=user, user_questions=user_questions)
+
+
+# Route decorator targetting add_question.html page
+# or login_or_signup.html page
+@app.route('/login_or_register', methods=['GET', 'POST'])
+def login_or_register():
+    return render_template('login_or_register.html')
+
+
+# Route decorators for when user is in login_or_register.html page
+# and chooses an option. First option is for login.html
 @app.route('/login_page')
 def login_page():
     return render_template('login.html')
@@ -123,30 +152,39 @@ def register_page():
     return render_template('register.html')
 
 
-# Route decorator targetting add_questions_page route decorator or login_or_signup.html page
+# Route decorator targetting add_question_page route decorator
+# or login_or_signup.html page
 @app.route("/login", methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        username = request.form['username']
-        password = request.form['password']
+        # check if username exists in db
+        existing_user = mongo.db.users.find_one(
+            {"username": request.form.get("username").lower()}
+        )
 
-        # Check that username and password match
-        user = mongo.db.users.find_one({"username": username})
-        if user and check_password_hash(user['password'], password):
-            # Put the user into 'session' cookie if details match
-            session['username'] = username
-            session['user_id'] = mongo.db.users.find_one({'username': username})['_id']
-            flash('Logged in successfully!', 'success')
-            return redirect(url_for('add_questions_page'))
+        if existing_user:
+            # ensure hashed password matches user input
+            if check_password_hash(
+                    existing_user['password'], request.form.get('password')):
+                        session['user'] = request.form.get('username').lower()
+                        flash('Welcome, {}'.format(
+                            request.form.get('username')))
+                        return redirect(url_for('profile'))
+            else:
+                # invalid password match
+                flash('Incorrect Username and/or Password. Please try again')
+                return redirect(url_for('login'))
         else:
-            # Error message if details do not match
-            flash('Invalid username or password. Please try again.', 'error')
-    return render_template('login.html')
+            # username doesn't exist
+            flash('Incorrect Username and/or Password')
+            return redirect(url_for('login'))
 
 
-# Route decorator for targetting login route decorator or add_questions.html page
+# Route decorator for targetting login route decorator
+# or add_question.html page
 @app.route('/register', methods=['GET', 'POST'])
 def register():
+    
     if request.method == 'POST':
         print('posting...')
         #Check if username already exists in db
@@ -154,7 +192,8 @@ def register():
             {'username': request.form.get('username').lower()})
 
         if existing_user:
-            flash('Username already exists. Please choose another username or go to login page', 'info')
+            flash('Username already exists.'
+                'Please choose another username or go to login page', 'info')
             return redirect(url_for('register'))
 
         # Generate user_id
@@ -176,15 +215,15 @@ def register():
         session['user_id'] = str(user_id)
         
         flash('Registration Successful!', 'success')
-        return redirect(url_for('add_questions_page'))
+        return redirect(url_for('profile'))
+    flash('There was an error in the registration process. Please try again.')
     return render_template('register.html')
-        
 
 
 # logout route decorator
 @app.route('/logout')
 def logout():
-    session.pop('username', None)
+    session.pop('user', None)
     session.pop('user_id', None)
     flash('You have been logged out.', 'info')
     return redirect(url_for('index'))
@@ -193,8 +232,9 @@ def logout():
 # add_question route decorator
 @app.route('/add_question', methods=['POST'])
 def add_question():
-    if 'username' in session:
-        username = session['username']
+
+    if 'user' in session:
+        user = session['user']
         user_id = session['user_id']
 
         # Get the next overall question count
@@ -224,7 +264,7 @@ def add_question():
 
         # Success message once quesiton has been added
         flash('Question added successfully!', 'success')
-        return redirect(url_for('add_questions_page'))
+        return redirect(url_for('add_question_page'))
     else:
         # Error handling message
         flash('Please log in or register to add a question', 'info')
