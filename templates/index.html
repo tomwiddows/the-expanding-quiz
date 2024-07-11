@@ -1,6 +1,20 @@
 {% extends "base.html" %}
 {% block content %}
 
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        <div class="row">
+            {% for category, message in messages %}
+                <div class="col s12">
+                    <alert class="card-panel {{ category | materialize_class }}">
+                        <span class="white-text">{{ message }}</span>
+                    </alert>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+    {% endwith %}
+
     <h2>Question: {{ question_info.question }}</h2>
 
     <div class="card">
