@@ -109,7 +109,7 @@ def profile():
     user = session['user']
     
     # Fetch user questions (all questions for admin, user-specific for others)
-    if mongo.db.users.find_one({'username': user})['is_admin'] == 'false':
+    if mongo.db.users.find_one({'username': user})['is_admin'] == False:
         user_questions = list(mongo.db.questions.find({'user.username': user}))
     else:
         user_questions = list(mongo.db.questions.find())
@@ -144,7 +144,7 @@ def login():
             # Verify password
             if check_password_hash(existing_user['password'], request.form.get('password')):
                 session['user'] = request.form.get('username').lower()
-                flash('Welcome, {}'.format(request.form.get('username')))
+                flash('Welcome back, {}'.format(request.form.get('username')), 'success')
                 return redirect(url_for('profile'))
             else:
                 flash('Incorrect Username and/or Password. Please try again')

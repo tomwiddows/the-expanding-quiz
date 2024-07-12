@@ -9,7 +9,7 @@
                 <div class="col s12">
                     <!-- Apply Materialize CSS classes based on message category -->
                     <alert class="{{ category | materialize_class }}">
-                        <span class="white-text flash_message">{{ message }}</span>
+                        <span class="flash_message">{{ message }}</span>
                     </alert>
                 </div>
             {% endfor %}

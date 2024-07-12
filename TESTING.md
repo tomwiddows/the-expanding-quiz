@@ -21,3 +21,7 @@
 | Chrome | ![screenshot](assets/images/chrome-test.png) | Works as expected |
 | Firefox | ![screenshot](assets/images/firefox-test.png) | Works as expected |
 | Edge | ![screenshot](assets/images/edge-test.png) | Works as expected |
+
+# Lighthouse
+
+![screenshot](assets/images/lighthouse-test.png)

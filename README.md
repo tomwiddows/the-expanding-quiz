@@ -54,3 +54,18 @@ __Site Administrator__
 ## Wireframes
 
 <img src="./assets/images/index-wireframe.jpg" height="300px">  <img src="./assets/images/profile-wireframe.jpg" height="300px">
+
+## Features
+
+__Question__
+
+
+
+| Feature | Page | Screenshot | Notes |
+| --- | --- | --- | --- |
+| Question & Answer | index.html | ![screenshot](assets/images/Q-and-A.png)! | Uses flask and jinjia templates to retrieve question_info from run.py which has already chosen a raondom question upon page load. Answer card doesn't reveal answer until arrow is clicked |
+| Next Question Button | index.html | ![screenshot](assets/images/next-question-button.png) | Links to index route decorator, reloading the page with a new question. Previous question's id was stored in SHOWN_QUESTION_IDS constant so will not be shown again. |
+| Login & Register Pages | login.html, register.html | ![screenshot](assets/images/register-form.png) ![screenshot](assets/images/login-form.png) | Both forms are styled identically. Each page has a button linking to the other page. Placeholders and icons increase ease of accessibility |
+|  Profile & Logout | profile.html | ![screenshot](assets/images/profile-and-logout.png) | Profile name displayed using jinja templating. Logout button links to /logout route decorator. Styled identically to Login/Register buttons |
+| Add a Question | profile.html | ![screenshot](assets/images/add-question-form.png) | Similar form to login and register forms. Links to /add_quesiton route decorator |
+| Edit/delete Questions | profile.html | ![screenshot](assets/images/edit-or-delete.png) | Buttons link to edit/delete modal popup where forms are filled in and the database is updated. |
