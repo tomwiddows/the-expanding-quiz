@@ -1,18 +1,21 @@
 {% extends "base.html" %}
 {% block content %}
 
+    <!-- User profile header -->
     <h3>{{ user }}'s Profile</h3>
 
+    <!-- Logout button -->
     <div class="row">
         <a href="{{ url_for('logout') }}">
             <button type="submit" class="btn-large" >Logout</button>
         </a>
-        
     </div>
     
+    <!-- Add Question section -->
     <div class="row">
         <h2>Add a Question</h2>
         <br>
+        <!-- Flash messages display -->
         <div>
             {% with messages = get_flashed_messages(with_categories=true) %}
                 {% if messages %}
@@ -29,21 +32,22 @@
             {% endwith %}
         </div>
         <br>
+        <!-- Add Question form -->
         <form class="col s12 m8 offset-m2" method="POST" action="{{ url_for('add_question') }}">
             <div class="card-panel">
-                <!-- Question -->
+                <!-- Question input field -->
                 <div class="row">
                     <div class="input-field col s12">
                         <input id="question" name="question" type="text" class="validate" maxlength="300" placeholder="Your Question" required>
                     </div>
                 </div>
-                <!-- Answer -->
+                <!-- Answer input field -->
                 <div class="row">
                     <div class="input-field col s12">
                         <input id="answer" name="answer" type="answer" class="validate" maxlength="50" placeholder="Answer" required>
                     </div>
                 </div>
-                <!-- Submit -->
+                <!-- Submit button -->
                 <div class="row">
                     <div class="col s12">
                         <button type="submit" class="btn-large text-shadow">
@@ -55,35 +59,43 @@
         </form>
     </div>
     
+    <!-- User's Questions section -->
     <div>
         <h2>My Questions</h2>
         <ul>
             {% for user_question in user_questions %}
                 <li>
+                    <!-- Display question and answer -->
                     <span>
                         <p>Q: {{ user_question.question }} A: {{ user_question.answer }}</p>
+                        <!-- Edit and Delete buttons -->
                         <a class="waves-effect waves-light btn modal-trigger" href="#edit-modal-{{ user_question._id }}">Edit</a>
                         <a class="waves-effect waves-light btn modal-trigger" href="#delete-modal-{{ user_question._id }}">Delete</a>
                     </span>
                     
+                    <!-- Edit Question Modal -->
                     <div id="edit-modal-{{ user_question._id }}" class="modal">
                         <div class="modal-content">
                             <form method="POST" action="{{ url_for('edit_question') }}">
+                                <!-- Question edit field -->
                                 <div class="row">
                                     <div class="input-field col s12">
                                         <input id="question-{{ user_question._id }}" name="question" type="text" class="validate" value="{{ user_question.question }}" maxlength="300" required>
                                     </div>
                                 </div>
+                                <!-- Answer edit field -->
                                 <div class="row">
                                     <div class="input-field col s12">
                                         <input id="answer-{{ user_question._id }}" name="answer" type="text" class="validate" value="{{ user_question.answer }}" maxlength="50" required>
                                     </div>
                                 </div>
+                                <!-- Hidden field for question ID -->
                                 <div class="row">
                                     <div class="input-field col s12">
                                         <input id="id-{{ user_question._id }}" name="id" type="hidden" value="{{ user_question._id }}" readonly>
                                     </div>
                                 </div>
+                                <!-- Submit button for edit -->
                                 <div class="row">
                                     <div class="col s12">
                                         <button type="submit" class="modal-close btn-large text-shadow">
@@ -95,17 +107,20 @@
                         </div>
                     </div>
 
+                    <!-- Delete Question Modal -->
                     <div id="delete-modal-{{ user_question._id }}" class="modal">
                         <div class="modal-content">
                             <form method="POST" action="{{ url_for('delete_question') }}">
                                 <div>  
                                     <p>Are you sure you want to delete the question?</p>
                                 </div>
+                                <!-- Hidden field for question ID -->
                                 <div class="row">
                                     <div class="input-field col s12">
                                         <input id="delete-id-{{ user_question._id }}" name="id" type="hidden" value="{{ user_question._id }}" readonly>
                                     </div>
                                 </div>
+                                <!-- Confirm delete button -->
                                 <div class="row">
                                     <div class="col s12">
                                         <button type="submit" class="modal-close btn-large text-shadow">

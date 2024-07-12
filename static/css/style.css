@@ -1,36 +1,46 @@
+/* Set the default font and text alignment for the entire body */
 body {
     font-family: "Arsenal SC", sans-serif;
     text-align: center;
 }
 
+/* Center-align the navigation menu items */
 nav.nav-center ul {
     text-align: center;
 }
 
+/* Style for individual navigation menu items */
 nav.nav-center ul li {
     display: inline;
-    float: none;
+    float: none;  /* Overrides default float behavior */
 }
+
+/* Style for navigation links */
 nav.nav-center ul li a {
     display: inline-block;
 }
 
+/* Set font size for navigation links */
 .nav-links {
     font-size: x-large;
 }
 
+/* Add right padding to the left navigation link */
 .left-link {
-    padding-right: 20vw;
+    padding-right: 20vw;  /* 20% of the viewport width */
 }
 
+/* Add left padding to the right navigation link */
 .right-link {
-    padding-left: 20vw;
+    padding-left: 20vw;  /* 20% of the viewport width */
 }
 
+/* Set color for navigation links */
 nav ul li a {
     color: black;
 }
 
+/* Style for the answer text */
 #answer {
     font-size: large;
 }

@@ -1,16 +1,24 @@
 {% extends "base.html" %}
 {% block content %}
 
+    <!-- Create a row to organize the layout -->
     <div class="row">
+        <!-- First column taking up 6/12 of the width -->
         <div class="col s6">
+            <!-- Form for navigating to the login page -->
             <form action="{{ url_for('login_page') }}">
+                <!-- Button to submit the form and navigate to the login page -->
                 <button type="submit" class="btn-large text-shadow">
                     Login
                 </button>
             </form>
         </div>
+        
+        <!-- Second column taking up 6/12 of the width -->
         <div class="col s6">
+            <!-- Form for navigating to the register page -->
             <form action="{{ url_for('register_page') }}">
+                <!-- Button to submit the form and navigate to the register page -->
                 <button type="submit" class="btn-large text-shadow">
                     Register
                 </button>
@@ -18,6 +26,4 @@
         </div>
     </div>
 
-
-    
 {% endblock %}

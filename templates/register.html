@@ -3,12 +3,14 @@
     <h3>Register</h3>
 
     <div class="row">
+        <!-- Flash Messages Section -->
         <div>
             {% with messages = get_flashed_messages(with_categories=true) %}
                 {% if messages %}
                     <div class="row">
                         {% for category, message in messages %}
                             <div class="col s12">
+                                <!-- Apply Materialize CSS classes based on message category -->
                                 <alert class="{{ category | materialize_class }}">
                                     <span class="white-text flash_message">{{ message }}</span>
                                 </alert>
@@ -18,26 +20,32 @@
                 {% endif %}
             {% endwith %}
         </div>
+        
+        <!-- Registration Instructions -->
         <div>
             <p>Username and password must be 5-15 characters long, and contain only letters and numbers</p>
         </div>
+        
+        <!-- Registration Form -->
         <form class="col s12 m8 offset-m2" method="POST" action="{{ url_for('register') }}">
             <div class="card-panel">
-                <!-- Username -->
+                <!-- Username Input Field -->
                 <div class="row">
                     <div class="input-field col s12">
                         <i class="fas fa-user-plus prefix"></i>
-                        <input id="username" name="username" type="text" minlength="5" maxlength="15" pattern="^[a-zA-Z0-9]{5,15}$" class="validate" placeholder="Username" required>
+                        <input id="username" name="username" type="text" minlength="5" maxlength="15" 
+                               pattern="^[a-zA-Z0-9]{5,15}$" class="validate" placeholder="Username" required>
                     </div>
                 </div>
-                <!-- Password -->
+                <!-- Password Input Field -->
                 <div class="row">
                     <div class="input-field col s12">
                         <i class="fas fa-user-lock prefix"></i>
-                        <input id="password" name="password" type="password" minlength="5" maxlength="15" pattern="^[a-zA-Z0-9]{5,15}$" class="validate" placeholder="Password" required>
+                        <input id="password" name="password" type="password" minlength="5" maxlength="15" 
+                               pattern="^[a-zA-Z0-9]{5,15}$" class="validate" placeholder="Password" required>
                     </div>
                 </div>
-                <!-- Register -->
+                <!-- Register Button -->
                 <div class="row">
                     <div class="col s12">
                         <button type="submit" class="btn-large text-shadow">
@@ -47,6 +55,8 @@
                 </div>
             </div>
         </form>
+        
+        <!-- Login Page Redirect Button -->
         <div class="row">
             <div class="col s12">
                 <form action="{{ url_for('login_page') }}">
@@ -57,8 +67,5 @@
             </div>
         </div>
     </div>
-
-    
-    
 
 {% endblock %}

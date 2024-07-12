@@ -1,11 +1,13 @@
 {% extends "base.html" %}
 {% block content %}
 
+    <!-- Flash Messages Section -->
     {% with messages = get_flashed_messages(with_categories=true) %}
     {% if messages %}
         <div class="row">
             {% for category, message in messages %}
                 <div class="col s12">
+                    <!-- Apply Materialize CSS classes based on message category -->
                     <alert class="{{ category | materialize_class }}">
                         <span class="white-text flash_message">{{ message }}</span>
                     </alert>
@@ -15,32 +17,33 @@
     {% endif %}
     {% endwith %}
 
+    <!-- Instruction for users -->
     <p>Create your own profile to add questions and expand the quiz.</p>
 
+    <!-- Display the current question -->
     <h2>Question: {{ question_info.question }}</h2>
 
+    <!-- Card to display the answer -->
     <div class="card">
         <div class="card_image"></div>
         <div class="card-content">
+          <!-- Clickable title to reveal the answer -->
           <span class="card-title activator grey-text text-darken-4">Click to reveal answer<br><i class="material-icons">arrow_downward</i></span>
         </div>
+        <!-- Revealed content (answer) -->
         <div class="card-reveal">
           <span class="card-title grey-text text-darken-4"><i class="material-icons right">close</i></span>
           <p id="answer">{{ question_info.answer }}</p>
         </div>
     </div>
     
+    <!-- Button to get the next question -->
     <div class="row">
         <form action="{{ url_for('index') }}">
             <button type="submit" class="btn-large">
                 Next Question
             </button>
         </form>
-
     </div>
 
-
-
-
-    
 {% endblock %}
