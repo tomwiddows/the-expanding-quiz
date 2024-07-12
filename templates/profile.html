@@ -71,12 +71,12 @@
                             <form method="POST" action="{{ url_for('edit_question') }}">
                                 <div class="row">
                                     <div class="input-field col s12">
-                                        <input id="question-{{ user_question._id }}" name="question" type="text" class="validate" value="{{ user_question.question }}" required>
+                                        <input id="question-{{ user_question._id }}" name="question" type="text" class="validate" value="{{ user_question.question }}" maxlength="300" required>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="input-field col s12">
-                                        <input id="answer-{{ user_question._id }}" name="answer" type="text" class="validate" value="{{ user_question.answer }}" required>
+                                        <input id="answer-{{ user_question._id }}" name="answer" type="text" class="validate" value="{{ user_question.answer }}" maxlength="50" required>
                                     </div>
                                 </div>
                                 <div class="row">
