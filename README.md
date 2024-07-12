@@ -75,3 +75,16 @@ __Question__
 ## Future Features
 
 I Want to add a Flag Questions/Answers feature, where users who are displayed a question can flag it. This means that the person who uploaded that question, as well as any administrators (myself) would be alerted that there is an issue with the question. There would be two options for flagging a question; either the answer may be wrong, or the question is inappropriate (maybe it is not a question, maybe it is offensive). If a user believes the answer is wrong, They can suggest a correction and if this correction cets a certain number of upvotes, it would replace the original answer. If a question gets flat a lot of times for being inappropriate, it would get deleted. 
+
+## Acknowledgements
+
+https://stackoverflow.com/questions/39299063/change-the-navbar-color-in-materializecss
+https://realpython.com/python-constants/
+https://www.geeksforgeeks.org/python-mongodb-find_one_and_replace-query/
+https://rakeshjain-devops.medium.com/fix-to-tip-of-your-current-branch-is-behind-its-remote-counterpart-git-error-eb75f719c2d5#:~:text=%E2%80%9Cthe%20tip%20of%20your%20current,usually%20some%20sort%20of%20rebase).
+https://www.geeksforgeeks.org/python-mongodb-find_one_and_replace-query/
+https://fontawesome.com/
+https://materializecss.com/cards.html
+https://learn.codeinstitute.net/courses/course-v1:CodeInstitute+NRDB_L5+2/courseware/9e2f12f5584e48acb3c29e9b0d7cc4fe/054c3813e82e4195b5a4d8cd8a99ebaa/
+
+Thank you to my mentor Sheryl for supporting me over slack, my totor Kaynat for our Monday stand-up meetings and my friend Sam for testing my project upon deployment
