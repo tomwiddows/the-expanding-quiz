@@ -1,5 +1,7 @@
 # The Expanding Quiz
 
+![screenshot](assets/images/amiresponsive.png)!
+
 ## Website Goals
 
 ### Customer Goals
@@ -69,3 +71,7 @@ __Question__
 |  Profile & Logout | profile.html | ![screenshot](assets/images/profile-and-logout.png) | Profile name displayed using jinja templating. Logout button links to /logout route decorator. Styled identically to Login/Register buttons |
 | Add a Question | profile.html | ![screenshot](assets/images/add-question-form.png) | Similar form to login and register forms. Links to /add_quesiton route decorator |
 | Edit/delete Questions | profile.html | ![screenshot](assets/images/edit-or-delete.png) | Buttons link to edit/delete modal popup where forms are filled in and the database is updated. |
+
+## Future Features
+
+I Want to add a Flag Questions/Answers feature, where users who are displayed a question can flag it. This means that the person who uploaded that question, as well as any administrators (myself) would be alerted that there is an issue with the question. There would be two options for flagging a question; either the answer may be wrong, or the question is inappropriate (maybe it is not a question, maybe it is offensive). If a user believes the answer is wrong, They can suggest a correction and if this correction cets a certain number of upvotes, it would replace the original answer. If a question gets flat a lot of times for being inappropriate, it would get deleted. 
