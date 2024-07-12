@@ -295,11 +295,23 @@ def edit_question():
 
 @app.route('/delete_question', methods=['GET', 'POST'])
 def delete_question():
-    if request.method == 'POST':
 
-        question_id = ObjectId(request.form.get('id'))
+    if 'user' in session:
 
-        result = mongo.db.questions.delete_one({"_id": question_id})
+        user = session['user']
+        user_id = mongo.db.users.find_one({'username': user})['_id']
+
+        if request.method == 'POST':
+
+            question_id = ObjectId(request.form.get('id'))
+
+            result = mongo.db.questions.delete_one({"_id": question_id})
+
+            # Increment the user's question count
+            mongo.db.users.update_one(
+                {'_id': ObjectId(user_id)},
+                {'$inc': {'question_count': -1}}
+            )
 
     return redirect(url_for('profile'))
     
