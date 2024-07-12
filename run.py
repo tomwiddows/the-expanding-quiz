@@ -98,6 +98,7 @@ def get_random_question():
 @app.route('/', methods=["GET", "POST"])
 def index():
     question_info = get_random_question()
+    print(question_info)
     return render_template('index.html', question_info=question_info)
 
 
