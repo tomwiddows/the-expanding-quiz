@@ -49,17 +49,6 @@ def materialize_class(category):
     return classes.get(category, '')
 
 
-# Helper function for keeping track of the number of questions for naming 
-# collections
-def get_next_question_count():
-    counter = mongo.db.counters.find_one_and_update(
-        {"_id": "question_count"},
-        {"$inc": {"count": 1}},
-        upsert=True,
-        return_document=True
-    )
-    return counter["count"]
-
 
 # Function for generating a random question from questions database
 def get_random_question():
@@ -72,6 +61,10 @@ def get_random_question():
         if total_questions == 0:
             return ('There are currently no quiz questions in the database. '
                 'Login to add some questions')
+
+        if total_questions - len(SHOWN_QUESTION_IDS) == 0:
+            return('You have seen all the questions on the quiz. '
+                'Login to add more')
 
         # Generate a random index to select a random question
         random_index = random.randint(0, total_questions - 1)
@@ -123,6 +116,7 @@ def profile():
     user = session['user']
     
     if mongo.db.users.find_one({'username': user})['is_admin'] == 'false':
+        print(mongo.db.users.find_one({'username': user})['is_admin'])
         user_questions = list(mongo.db.questions.find({'user.username': user}))
 
     else:
