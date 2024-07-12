@@ -59,11 +59,11 @@ def get_random_question():
         )
 
         if total_questions == 0:
-            return ('There are currently no quiz questions in the database. '
+            random_question = ('There are currently no quiz questions in the database. '
                 'Login to add some questions')
 
-        if total_questions - len(SHOWN_QUESTION_IDS) == 0:
-            return('You have seen all the questions on the quiz. '
+        if total_questions == len(SHOWN_QUESTION_IDS):
+            random_question = ('You have seen all the questions on the quiz. '
                 'Login to add more')
 
         # Generate a random index to select a random question
