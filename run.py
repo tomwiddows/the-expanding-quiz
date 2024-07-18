@@ -91,7 +91,6 @@ def get_random_question():
 @app.route('/', methods=["GET", "POST"])
 def index():
     question_info = get_random_question()
-    print(question_info)  # Debug print
     return render_template('index.html', question_info=question_info)
 
 # Route to add a question page (requires login)
@@ -247,7 +246,6 @@ def edit_question():
 
         # Replace the old question with the new one
         result = mongo.db.questions.replace_one({'_id': question_id}, new_question_doc)
-        print(result)  # Debug print
 
     return redirect(url_for('profile'))
 
