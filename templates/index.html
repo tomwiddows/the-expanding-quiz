@@ -19,21 +19,23 @@
 
     <!-- Instruction for users -->
     <p>Create your own profile to add questions and expand the quiz.</p>
-
+    
+   
     <!-- Display the current question -->
     <h2>Question: {{ question_info.question }}</h2>
+    <p>By {{ question_info.user.0.username }}</p>
 
     <!-- Card to display the answer -->
     <div class="card">
         <div class="card_image"></div>
         <div class="card-content">
-          <!-- Clickable title to reveal the answer -->
-          <span class="card-title activator grey-text text-darken-4">Click to reveal answer<br><i class="material-icons">arrow_downward</i></span>
+        <!-- Clickable title to reveal the answer -->
+        <span class="card-title activator grey-text text-darken-4">Click to reveal answer<br><i class="material-icons">arrow_downward</i></span>
         </div>
         <!-- Revealed content (answer) -->
         <div class="card-reveal">
-          <span class="card-title grey-text text-darken-4"><i class="material-icons right">close</i></span>
-          <p id="answer">{{ question_info.answer }}</p>
+        <span class="card-title grey-text text-darken-4"><i class="material-icons right">close</i></span>
+        <p id="answer">{{ question_info.answer }}</p>
         </div>
     </div>
     

@@ -57,16 +57,10 @@ def materialize_class(category):
 
 # Function to get a random question from the database
 def get_random_question():
+    # Count total questions in the collection
+    total_questions = mongo.db.questions.count_documents({})
+    print(total_questions)
     try:
-        # Count total questions in the collection
-        total_questions = mongo.db.questions.count_documents({})
-
-        # Handle cases where there are no questions or all questions have been shown
-        if total_questions == 0:
-            return 'There are currently no quiz questions in the database. Login to add some questions'
-        if total_questions == len(SHOWN_QUESTION_IDS):
-            return 'You have seen all the questions on the quiz. Login to add more'
-
         # Get a random question that hasn't been shown yet
         while True:
             random_index = random.randint(0, total_questions - 1)
@@ -81,24 +75,37 @@ def get_random_question():
             {'$inc': {"shown_x_times": 1}}
         )
 
-        return random_question
+        questions_left = total_questions - (len(SHOWN_QUESTION_IDS))
+        print(questions_left)
+        if questions_left == 0:
+            return None
+        else:
+            return random_question
 
     except Exception as e:
         print("Error fetching random question:", e)
         return "An error occurred while fetching a random question."
 
+# Route for the no questions page
+@app.route('/no_questions_page', methods=["GET", "POST"])
+def no_questions_page():
+    return render_template('no_questions.html')
+
 # Route for the home page
 @app.route('/', methods=["GET", "POST"])
 def index():
     question_info = get_random_question()
-    return render_template('index.html', question_info=question_info)
+    if question_info is None:
+        return redirect(url_for('no_questions_page'))
+    else:
+        return render_template('index.html', question_info=question_info)
 
 # Route to add a question page (requires login)
 @app.route('/add_question_page', methods=['POST'])
 def add_question_page():
     if 'user' in session:
         return render_template('add_question.html')
-    return render_template(url_for('login_or_register'))
+    return rendirect(url_for('login_or_register'))
 
 # Route for user profile page
 @app.route('/profile', methods=['GET', 'POST'])
@@ -220,6 +227,8 @@ def add_question():
             {'$inc': {'question_count': 1}}
         )
 
+        total_questions +=1
+
         flash('Question added successfully!', 'success')
         return redirect(url_for('profile'))
     else:
@@ -274,4 +283,4 @@ if __name__ == '__main__':
     app.run(
         host=os.environ.get('IP', '0.0.0.0'),
         port=int(os.environ.get('PORT', '5000')),
-        debug=False)  # Set to False in production
+        debug=True)  # Set to False in production

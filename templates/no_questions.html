@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block content %}
+
+    <!-- Flash Messages Section -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        <div class="row">
+            {% for category, message in messages %}
+                <div class="col s12">
+                    <!-- Apply Materialize CSS classes based on message category -->
+                    <alert class="{{ category | materialize_class }}">
+                        <span class="flash_message">{{ message }}</span>
+                    </alert>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+    {% endwith %}
+
+    <!-- Instruction for users -->
+    <p>Create your own profile to add questions and expand the quiz.</p>
+    
+    <!-- if statement to decide which message should be displayed; if there are no questions at all: -->
+    {% if total_questions == 0 %}
+        <h3>There are currently no quesitons in the database. Please login to add questions</h3>
+    <!-- and if there are questions in the db but all have been displayed: -->
+    {% else %}
+        <h3>You have finished the quiz, for now. Please login to add questions and help expand the quiz</h3>
+    {% endif %}
+
+{% endblock %}
