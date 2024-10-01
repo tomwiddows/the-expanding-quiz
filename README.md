@@ -72,6 +72,44 @@ __Question__
 | Add a Question | profile.html | ![screenshot](assets/images/add-question-form.png) | Similar form to login and register forms. Links to /add_quesiton route decorator |
 | Edit/delete Questions | profile.html | ![screenshot](assets/images/edit-or-delete.png) | Buttons link to edit/delete modal popup where forms are filled in and the database is updated. |
 
+## Deployment
+
+This project is deployed to Heroku. It is set to automatically update within heroku upon being pushed to GitHub. The steps to Deployment are as follows:
+
+1. A requirements.txt file is needed for Heroku to run the app. This file contains a list of python dependencies for the project. The following command was entered to the terminal to create the requirements.txt file filled with the dependencies:
+
+    pip freeze --local > requirements.txt
+
+2. Heroku also requires a Procfile to run the app. This contains the start command (which app  should be run and how to run it) and is created using the following command:
+
+    echo web: python run.py > Procfile
+
+3. Ensure these files are pushed to GitHub
+
+4. Go to Heroku and log in. Do so with a GitHub account to make deployment easier. 
+
+5. Now create a new app and give it an appropriate name. The name of this app in Heroku is          'the-expanding-quiz'. Heroku also needs to know which region you are closest to. 
+
+6. Within the 'Deploy' tab in the Heroku app, select GitHub as the deployment method. You will then 
+be prompted to connect to GitHub, which is done by checking that the correct profile is displayed and copying in your GitHub repository name. Click connect. 
+
+7. Next, go to the 'Settings' tab and click 'Reveal Config Vars'. Heroku needs to know five 
+environment variables to run the app: IP, PORT, SECRET_KEY, MONGO_URI and MONGO_DBNAME. These are contained within the env.py file. Each of them should be in the format:
+
+    os.environ.setdefault("KEY", "VALUE")
+
+    Type these into the input boxes labelled 'KEY' and their respective values in the 'VALUE' boxes. 
+
+    The IP should be set to 0.0.0.0 to accept all IP addresses. Add your PORT and SECRET_KEY. 
+
+    The MONGO_URI is found within MongoDB Atlas. Once in the 'database' tab, click connect and select the 'Drivers' option under 'Connect to your application' A terminal command will be provided depending on which version of python you are using, followed by a connection string. You must add your user password (found within 'Database Access') and cluster name (in 'database') to the string where stated.
+
+    The NONGO_DBNAME is the name of your database within the cluster.
+
+8. Go back to the 'Deploy' tab in Heroku and 'Enable Automatic Deployment".
+
+9. Finally, click "Deploy Branch". The app code should now begin to load within Heroku and once loaded, any changes pushed to GitHub should automatically deploy to Heroku.
+
 ## Future Features
 
 I Want to add a Flag Questions/Answers feature, where users who are displayed a question can flag it. This means that the person who uploaded that question, as well as any administrators (myself) would be alerted that there is an issue with the question. There would be two options for flagging a question; either the answer may be wrong, or the question is inappropriate (maybe it is not a question, maybe it is offensive). If a user believes the answer is wrong, They can suggest a correction and if this correction cets a certain number of upvotes, it would replace the original answer. If a question gets flat a lot of times for being inappropriate, it would get deleted. 
